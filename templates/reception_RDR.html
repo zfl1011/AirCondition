@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详单</title>
+</head><script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+    //getnew();
+    function gethref(){
+        var h = "CreateRDR?RoomId="+$("#room").val()+"&date_in="+$("#in").val()+"&date_out="+$("#out").val()
+        $("#btn").href = "localhost:8000/reception/"+h
+    }
+    //function getnew(){console.log(("#room").val,("#in").val(),("#out").val())}
+    $(document).ready(function(){
+        {#getnew()#}
+        //var h = "CreateRDR?RoomId="+$("#room").val()+"&date_in="+$("#in").val()+"&date_out="+$("#out").val()
+       $.get("CreateRDR?RoomId="+$("#room").val()+"&date_in="+$("#in").val()+"&date_out="+$("#out").val(),function(data,status) {
+           var table = document.getElementById("table");
+           for (var i = 0; i < data.length; i++) {
+               var row = table.insertRow(table.rows.length);
+               var c1 = row.insertCell(0);
+               c1.innerHTML = i + 1;
+               var c2 = row.insertCell(1);
+               c2.innerHTML = data[i].StartTime;
+               var c3 = row.insertCell(2);
+               c3.innerHTML = data[i].ServerDuration;
+               var c4 = row.insertCell(3);
+               c4.innerHTML = data[i].FeeRate;
+               var c5 = row.insertCell(4);
+               c5.innerHTML = data[i].Fee;
+               var c6 = row.insertCell(5);
+               c6.innerHTML = data[i].Requests;
+           }
+           if (data.length == 0) alert("抱歉，没有查询到数据")
+       })
+        $("#btn").click(function(){
+	        var h = "PrintRDR?RoomId="+$("#room").val()
+            window.open(h)
+
+	        //window.open(h,'','height=500,width=611,scrollbars=yes,status =yes')
+		    //alert("详单在新窗口显示")
+	    });
+    })
+</script>
+<body>
+<div style="margin:0 auto;text-align:center;">
+<input id="room" type="number" style="display:none" value={{ id }}>
+<input id="in" type="text" style="display:none" value={{ in }}>
+<input id="out" type="text" style="display:none" value={{ out }}>
+<table class="allTable" id="table" style="width:2000px;margin:0 auto;text-align:left;" >
+    <tbody>
+        <tr>
+            <th style="width:70px;">编号</th>
+            <th style="width:150px;">服务开始时间</th>
+            <th style="width:100px;">服务持续时间(秒)</th>
+            <th style="width:100px;">费率(元/度)</th>
+            <th style="width:100px;">费用</th>
+            <th style="width:1000px;text-align:left;">对应请求(格式:年月日-时间-目标温度-风速__..)</th>
+        </tr>
+    </tbody>
+</table>
+<a id="btn" >下载</a>
+</div>
+</body>
+</html>

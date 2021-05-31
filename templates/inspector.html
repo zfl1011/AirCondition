@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>管理员-波普特酒店</title>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready(function(){
+	 $("#button1").click(function(){
+	    $.get("powerOn",function(data,status){
+			alert("数据: " + data + "\n状态: " + status);
+		});
+	});
+	$("#button2").click(function(){
+	    $.get("setPara?Mode="+$("#mode").val()+"&HT="+$("#THL").val()+"&LT="+$("#TLL").val()+"&DT="+$("#DT").val()+"&fee="+$("#fee").val(),function(data,status){
+			alert("调参数据: " + data );
+		});
+	});
+	$("#button3").click(function(){
+	    $.get("startUp",function(data,status){
+			alert("运行 " + data + "元");
+		});
+	});
+	$("#button4").click(function(){
+	    $.get("shutDown",function(data,status){
+			alert("关机"+data);
+		});
+	});
+	$("#button8").click(function(){
+	    $.get("CheckRoomState",function(data,status){
+			alert("监控"+data);
+		});
+	});
+});
+</script>
+</head>
+<body>
+<div style="height:1000px;width:300px;margin:0 auto;text-align:center;">
+    您好，管理员<br><br>
+    <button id="button1">打开电源</button>
+    <br><br>
+    <form action="" >
+        参数设置<br>空调模式
+        <select id="mode"  style="height:25px;">
+            <option value="1">制冷</option>
+            <option value="2">制热</option>
+        </select><br>
+        目标温度上限<input id="THL" type="number" value=28><br>
+        目标温度下限<input id="TLL" type="number" value=18><br>
+        缺省服务温度<input id="DT" type="number" value=25><br>
+        费率（元/度）<input id="fee" type="number" value=1>
+        <input type="button" id="button2" value="提交参数">
+    </form>
+    <br>
+    <button id="button3">运行空调</button><br>
+    <button id="button4">停止空调</button><br>
+    <button id="button5" onclick="window.open('page','','height=500,width=611,scrollbars=yes,status =yes')">房间状态</button>
+</div>
+
+
+</body>
+</html>

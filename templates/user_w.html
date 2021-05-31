@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>波普特酒店-制热</title>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+$(document).ready(function(){
+	 $("#button1").click(function(){
+	    $.get("RequestOn?RoomId="+{{ id }},function(data,status){
+			alert("开机 数据: " + data + "\n状态: " + status);
+		});
+	});
+	$("#button2").click(function(){
+	    $.get("RequestOff?RoomId="+{{ id }},function(data,status){
+			alert(" 数据: " + data );
+		});
+	});
+	$("#button3").click(function(){
+	    $.get("RequestFee?RoomId="+{{ id }},function(data,status){
+			alert("目前已花费: " + data + "元");
+		});
+	});
+	$("#button4").click(function(){
+	    $.get("ChangeTargetTemp?RoomId="+$("#RoomId").val()+"&TargetTemp="+$("#TargetTemp").val(),function(data,status){
+			alert("调温"+data);
+		});
+	});
+	$("#button5").click(function(){
+	    {#var f = $("#fan").options[$("#fan").selectedIndex].value;#}
+	    $.get("ChangeFanSpeed?RoomId="+$("#RoomId").val()+"&FanSpeed="+$("#fan").val(),function(data,status){
+			alert("调风"+data);
+		});
+	});
+});
+</script>
+</head>
+<body>
+<div style="height:1000px;width:300px;margin:0 auto;text-align:center;">
+    您好，{{id}}号房间的住户<br><br>
+    <button id="button1">开机</button>
+    <br><br>
+    <form action="" >
+        制冷范围{{ lt }}-{{ ht }}℃，默认{{ dt }}℃<br>
+        <input id="RoomId" type="number" style="display:none" value={{ id }}>
+{#        oninput="if(value>25)value=25;if(value<18)value=18"#}
+        <input id="TargetTemp" type="number" value=22>
+        <input type="button" id="button4" value="确认改变温度">
+    </form>
+    <br>
+    <form action=""  style="width:300px;margin:0 auto;">
+        <input id="RoomId" type="number" style="display:none" value={{ id }}>
+    <select id="fan" name="fanSpeed" style="height:25px;">
+        <option value="1">中速风(默认)</option>
+        <option value="0">高速风</option>
+        <option value="2">低速风</option>
+        <input type="button" id="button5" value="确认改变风速" style="margin-left:5px;">
+    </select>
+    </form>
+    <br>
+    <button id="button2">关机</button>
+    <br><br>
+    <button id="button3">查询总费用</button>
+    <br><br>
+
+</div>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>波普特-前台</title>
+</head>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+    function down(h){
+        var t = window.open(h,'','height=100,width=1611,scrollbars=yes,status =yes')
+        alert("账单已开始下载" )
+        setTimeout("t.close()",1000)
+    }
+    function setfee(fee){
+        var table = document.getElementById("table");
+        l = table.rows.length
+        for (var i = l-1; i >0 ; i--) {
+            //alert(i + " " + l)
+            console.log(l+"delete"+i)
+            table.deleteRow(i)
+        }
+        var row = table.insertRow(table.rows.length);
+        var c1 = row.insertCell(0);
+        c1.innerHTML = $("#room").val();
+        var c2 = row.insertCell(1);
+        c2.innerHTML = fee.toFixed(2)
+        var v = document.getElementById("btn2")
+        v.style.display = "inline"
+    }
+$(document).ready(function(){
+	 $("#button1").click(function(){
+	    var h = "CreateInvoice?RoomId="+$("#room").val()+"&date_in="+$("#in").val()+"&date_out="+$("#out").val()
+	    $.get(h,function(data,status){
+	        setfee(data.Total_Fee)
+			//alert("总花费: " + data.Total_Fee + " 元" );
+		});
+	});
+	 $("#btn2").click(function(){
+         var h = "PrintInvoice?RoomId="+$("#room").val()
+         console.log(h)
+         window.open(h)
+     })
+	$("#button2").click(function(){
+	    var h = "RDR?RoomId="+$("#room").val()+"&date_in="+$("#in").val()+"&date_out="+$("#out").val()
+	    window.open(h,'','height=200,width=1200,scrollbars=yes,status =yes')
+		alert("详单在新窗口显示")
+	});
+});
+</script>
+<body>
+<div style="height:1000px;width:300px;margin:0 auto;text-align:center;">
+    您好，前台<br><br><br><br>
+    <form action="" >
+        房间号<br><input id="room" type="number" value=1><br><br>
+        入住时间(格式:2020.1.1-14)<input id="in" type="text" value="2020.1.1-0"><br><br>
+        离开时间(格式:2020.7.1-12)<input id="out" type="text" value="2020.7.1-0"><br><br>
+        <input type="button" id="button1" value="显示总费用"><br><br>
+        <input type="button" id="button2" value="显示详单">
+    </form><br><br>
+    <table class="allTable" id="table" style="width:200px;margin:0 auto;text-align:center;" >
+    <tbody>
+        <tr>
+            <th style="width:100px;">房间号</th>
+            <th style="width:100px;">总费用</th>
+        </tr>
+    </tbody>
+    </table>
+    <button id="btn2" style="display: none" value="234">打印费用</button>
+</div>
+</body>
+</html>

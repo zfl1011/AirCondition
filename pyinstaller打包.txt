@@ -1,0 +1,24 @@
+pip install pyinstall
+
+进入manager.py目录 ！！！有spec别做这个，，写的hidden就没了
+pyi-makespec -D manage.py
+
+生成了.spec
+
+hiddenimports=[]加一堆东西  ...之前一直加错地方了('django.contrib.admin.apps','django.contrib.auth.apps','django.contrib.contenttypes.apps',
+	'django.contrib.sessions.apps', 'django.contrib.messages.apps', 'django.contrib.staticfiles.apps',)
+
+(如果需要openpyxl可能需要
+pip uninstall openpyxl
+pip install openpyxl==2.3.4
+)
+
+如果打过包、已经有dist文件夹，确保关掉所有dist内的文件、文件夹，然后
+pyinstaller manage.spec
+
+往dict/manage 复制__pycache__  、.idea、templates
+往对应的app文件夹复制.py : admin、url等，不用带__init__和文件夹
+
+如果没有建表manage.exe makemigrations  manage.exe migrate
+
+在manage.exe所在目录 manage.exe runserver

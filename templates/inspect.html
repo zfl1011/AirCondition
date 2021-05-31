@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="utf-8">
+    <title>房间状态监控</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+    var time = 0
+    var interval=setInterval(function(){
+        /*var table = document.getElementById("table");
+        l = table.rows.length
+        for (var i = l-1; i >0 ; i--) {
+            //alert(i + " " + l)
+            console.log(l+"delete"+i)
+            table.deleteRow(i)
+        }*/
+        getnew()
+    },5000);
+    //获取系统时间
+    function showTime() {
+        nowtime = new Date();
+        hour = nowtime.getHours();//时
+        minutes = nowtime.getMinutes();
+        seconds = nowtime.getSeconds();
+        if(minutes<10) minutes="0"+minutes
+        if(seconds<10) seconds="0"+seconds
+        timeline = hour + ":" + minutes + ":" + seconds;
+        return timeline
+    }
+    function getnew(){
+       $.get("CheckRoomState",function(data,status) {
+           var table = document.getElementById("table");
+
+           var row = table.insertRow(table.rows.length);
+           var c1 = row.insertCell(0);
+           if(time%12==0)  c1.innerHTML = "#"+time/12
+           else c1.innerHTML = showTime();
+           time += 1
+           for (var i = 0; i < data.length; i++) {
+               var row = table.insertRow(table.rows.length);
+               var c1 = row.insertCell(0);
+               c1.innerHTML = i + 1;
+               var c2 = row.insertCell(1);
+               c2.innerHTML = data[i].state;
+               var c3 = row.insertCell(2);
+               c3.innerHTML = data[i].Current_Temp;
+               var c4 = row.insertCell(3);
+               c4.innerHTML = data[i].Target_Temp;
+               var c5 = row.insertCell(4);
+               c5.innerHTML = data[i].Fan;
+               var c6 = row.insertCell(5);
+               c6.innerHTML = data[i].Fee;
+               var c7 = row.insertCell(6);
+               c7.innerHTML = data[i].Duration;
+           }
+           //var tableHeight = table.height();
+           //document.getElementById("panel").scrollTop = tableHeight;
+           var scrollDom = document.getElementById('panel');
+            scrollDom.scrollTop = scrollDom.scrollHeight
+           if (data.length == 0) {
+               alert("抱歉，没有查询到数据")
+           }
+       })
+    }
+
+
+</script>
+</head>
+<body>
+<div id='panel' style='height:520px;overflow:auto'>
+    <table class="allTable" id="table" style="width:600px;margin:0 auto;text-align:center;" >
+    <tbody>
+        <tr>
+            <th style="width:70px;">房间</th>
+            <th style="width:100px;">空调状态</th>
+            <th style="width:100px;">当前温度</th>
+            <th style="width:100px;">目标温度</th>
+            <th style="width:100px;">风速</th>
+            <th style="width:100px;">费用</th>
+            <th style="width:100px;">时长</th>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</body>
+</html>

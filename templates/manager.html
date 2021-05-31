@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>经理-波普特酒店</title>
+</head><script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script>
+    var xmlhttp
+$(document).ready(function(){
+     $("#btn2").click(function(){
+         var h = "PrintReport"
+         window.open(h)
+     })
+	 $("#btn").click(function(){
+	     var roomList = new Array();
+	     var i = 1
+         for(i;i<6;i++){
+             var tmp = "#r" + i
+             if($(tmp).is(':checked'))
+                 roomList.push(i)
+                //console.log(tmp,1)
+         }
+         var type = $("#type").val()
+         var stime = $("#in").val()
+
+         var postData = {
+            "roomList": roomList,
+            "type": type,
+             "stime": stime
+         };
+         postData = (function(obj){ // 转成post需要的字符串.
+            var str = "";
+            for(var prop in obj){
+               str += prop + "=" + obj[prop] + "&"
+            }
+            return str;
+         })(postData);
+         xmlhttp=new XMLHttpRequest();
+         xmlhttp.open("POST","QueryReport",true);
+         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         xmlhttp.send(postData);
+         xmlhttp.onreadystatechange = setTable;
+         //# Django默认开启防止csrf(跨站点请求伪造)攻击,在post请求时,没有上传 csrf字段,导致校验失败,报403错误
+	});
+});
+function setTable() {
+        var table = document.getElementById("table");
+        l = table.rows.length
+        for (var i = l-1; i >0 ; i--) {
+            //alert(i + " " + l)
+            console.log(l+"delete"+i)
+            table.deleteRow(i)
+        }
+        if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            console.log(xmlhttp.responseText)
+            if (xmlhttp.responseText[0] == 'w')
+                alert("时间错误，请不要大于现在并保证格式正确")
+            else{
+            data = JSON.parse(xmlhttp.responseText)
+            alert("成功！" + data[1].id);
+            for (var i = 0; i < data.length; i++) {
+                var row = table.insertRow(table.rows.length);
+                var c1 = row.insertCell(0);
+                c1.innerHTML = data[i].id;
+                var c2 = row.insertCell(1);
+                c2.innerHTML = data[i].on;
+                var c3 = row.insertCell(2);
+                c3.innerHTML = (data[i].dur / 60).toFixed(2);
+                var c4 = row.insertCell(3);
+                c4.innerHTML = data[i].fee;
+                var c5 = row.insertCell(4);
+                c5.innerHTML = data[i].beS;
+                var c6 = row.insertCell(5);
+                c6.innerHTML = data[i].RDR;
+                var c7 = row.insertCell(6);
+                c7.innerHTML = data[i].fan;
+                var c8 = row.insertCell(7);
+                c8.innerHTML = data[i].temp;
+            }
+            var v = document.getElementById("btn2")
+            v.style.display = "inline"
+            }
+
+            //document.getElementById("btn").style.visibility = "hidden"//style="visibility:hidden"
+            if (data.length == 0)
+                alert("抱歉，没有查询到数据")
+        }
+    }
+</script>
+</head>
+<body>
+<div style="height:1000px;width:1000px;margin:0 auto;text-align:center;">
+    您好，经理<br><br>
+    选择房间
+    <form action="" >
+        <label><input id="r1" type="checkbox" value=""  checked="checked"/>1 </label>
+        <label><input id="r2" type="checkbox" value="" checked="checked"/>2 </label>
+        <label><input id="r3" type="checkbox" value="" checked="checked"/>3 </label>
+        <label><input id="r4" type="checkbox" value="" checked="checked"/>4 </label>
+        <label><input id="r5" type="checkbox" value="" checked="checked"/>5 </label>
+    </form>
+    <br>
+    终止时间(格式:2020.6.14-10)<br><input id="in" type="text" value="2020.6.14-10"><br><br>
+    类型<br>
+    <select id="type"  style="height:25px;">
+        <option value="0">日报</option>
+        <option value="1">周报</option>
+        <option value="2">月报</option>
+        <option value="3">年报</option>
+    </select><br><br>
+    <button id="btn">生成报表</button><br>
+    <table class="allTable" id="table" style="width:600px;margin:0 auto;text-align:center;" >
+    <tbody>
+        <tr>
+            <th style="width:70px;">房间号</th>
+            <th style="width:100px;">开机次数</th>
+            <th style="width:100px;">使用时长(分钟)</th>
+            <th style="width:100px;">总费用</th>
+            <th style="width:100px;">被服务数</th>
+            <th style="width:100px;">详单数</th>
+            <th style="width:100px;">调风次数</th>
+            <th style="width:100px;">调温次数</th>
+        </tr>
+    </tbody>
+    </table>
+    <button id="btn2" style="display: none" value="234">下载</button>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+完成scheduler输出
+接下来的任务
+
+计费模块
+回温模块
+服务时降温
+图形化界面
+
+manager
+    统计报表
+
+user
+    暂无
+
+reception
+    setPara
+    打印详单账单
+
+inspector
+    监控
+
