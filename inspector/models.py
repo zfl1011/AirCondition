@@ -11,7 +11,7 @@ class Hotel(models.Model):
     startTime = models.FloatField(default=0.0)
     endTime = models.FloatField(default=0.0)#为0提示已经有一个在运行，要开启新的，先关闭旧的
     roomNum = models.IntegerField(default=5)
-    serveUnitNum = models.IntegerField(default=6)
+    serveUnitNum = models.IntegerField(default=3)
     Mode = models.IntegerField(default=1)
     # Mode = models.CharField(max_length=50, choices=MODE, default=MODE[1])
     tempLimitHigh = models.IntegerField(default=28)
