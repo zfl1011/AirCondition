@@ -5,7 +5,7 @@ class Room(models.Model):
     roomID = models.IntegerField()
     time = models.FloatField(default=0.0)#好像没用？？只给request了//state的计一次服务时长
     temp = models.FloatField(default=0.0)#在request里没用，用于记录是否第一次请求，用来优先级
-    fee = models.FloatField(default=0.0)
+    fee = models.FloatField(default=0.00)
 
     class Meta:
         abstract = True #没有实际的表

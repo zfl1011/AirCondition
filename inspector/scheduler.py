@@ -20,9 +20,9 @@ class Scheduler:
         feerate = hotel[0].feeRateL
         backtemp = [0,0,0,0,0]
         if hotel[0].Mode == 2:
-            rate = [0.15,0.075,0.05]
+            rate = [0.2,0.1,0.05]
         else:
-            rate = [-0.15,-0.075,-0.05]
+            rate = [-0.2,-0.1,-0.05]
         thread_pool = ThreadPoolExecutor(3)
         while len(hotel) > 0 and hotel[0].isSchedulerRunning == 1:
             print("after 9 seconds")
@@ -85,7 +85,7 @@ class Scheduler:
                 for r in needJudge:
                     req = RoomRequest.objects.filter(roomID=r.roomID).order_by("-pk")
                     target = req[0].targetTemp
-                    if (self.mode == 1 and target < r.temp) or (self.mode == 2 and target > r.temp ):
+                    if (self.mode == 1 and target+1 < r.temp) or (self.mode == 2 and target-1 > r.temp ):
                         wq = WaitQueue.objects.get(roomID=r.roomID)
                         print(r.roomID, "号房间回温到",r.temp,"需要服务, waitqueue",wq.order)
                         r.state = 1
@@ -93,9 +93,9 @@ class Scheduler:
                         continue
                     print(r.roomID,"号房间回温中",backtemp[r.roomID-1],r.temp)
                     if self.mode == 1:
-                        backtemp[r.roomID-1] = round(backtemp[r.roomID-1]+0.075,3 )
+                        backtemp[r.roomID-1] = round(backtemp[r.roomID-1]+0.15,3)
                     else:
-                        backtemp[r.roomID - 1] = round(backtemp[r.roomID - 1] - 0.075, 3)
+                        backtemp[r.roomID - 1] = round(backtemp[r.roomID - 1] - 0.15, 3)
                     if abs(backtemp[r.roomID-1]) == 0.45:
                         if self.mode == 1:
                             r.temp += 0.5
@@ -332,21 +332,31 @@ def serveSimulate(unitID, roomID, stemp, rpk, feerate):
     unit.save()
     count = 0
     r = RoomState.objects.get(roomID=roomID)
+    rf=r.fee
     while unit.state == 1 and r.state == 2:
-        count += 1
-        if count % 3 ==0:
-            print(time.asctime(time.localtime(time.time())),"unit ", unit.name, " is serving room",roomID)
         time.sleep(1)
         tmp = ServerUnit.objects.filter(name=unitID)
         r = RoomState.objects.get(roomID=roomID)
+        rr=RoomRequest.objects.filter(roomID=roomID).last()
         unit = tmp[0]
-    # TODO 计费
+        count += 1
+        if count % 5 == 0:
+            print(time.asctime(time.localtime(time.time())), "unit ", unit.name, " is serving room", roomID)
+            # TODO 计费
+            if rr.speed == 1:
+                change = 5 / 60
+            elif rr.speed == 0:
+                change = (5 / 60) * 1.2
+            elif rr.speed == 2:
+                change = (5 / 60) * 0.8
+            fee = round(change * feerate, 2)
+            r.fee = r.fee + fee
+            r.save()
+
     r = RoomState.objects.get(roomID=roomID)
-    change = abs(round(r.temp - stemp,2))
-    print("unit 计费 abs(r[0].temp - stemp):abs(",r.temp, "-", stemp, ")=",change)
-    fee = change*feerate
+    dur=r.fee-rf
     # TODO  scheduleLog
-    sl = SchedulerLog.objects.create(serverID=unit.name, roomID=roomID, requestID=rpk, startTime=st, endTime=time.time(), fee=fee)
+    sl = SchedulerLog.objects.create(serverID=unit.name, roomID=roomID, requestID=rpk, startTime=st, endTime=time.time(), fee=dur)
     sl.save()
     print("unit ", unit.name, " serve over",roomID,time.asctime(time.localtime(time.time())))
     if r.state == 2:

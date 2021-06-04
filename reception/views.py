@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, FileResponse
 from .models import RDR,Invoice
 from user.models import RoomState, RoomRequest
+from inspector.models import SchedulerLog
 # Create your views here.
 #计费在结算后清空 roomstate也要改0 发一个requestOff
 from common import helper
@@ -58,9 +59,12 @@ def createInvoice(request):
     dateOut=request.GET.get('date_out')
     timeIn=time.mktime(time.strptime(dateIn,"%Y.%m.%d-%H"))
     timeOut=time.mktime(time.strptime(dateOut, "%Y.%m.%d-%H"))
+    logs = SchedulerLog.objects.filter(roomID=roomID, startTime__range=[timeIn, timeOut])
+    fee=0.0
+    for record in logs:
+        fee=fee+record.fee
     roomstate=RoomState.objects.get(roomID=roomID)
     roomstate.state = 0
-    fee=roomstate.fee
     #记录request
     RoomRequest.objects.create(roomID=roomID, time=time.time(), speed=-1)
     # 计费在结算后清空 roomstate也要改0
