@@ -14,13 +14,13 @@ class Hotel(models.Model):
     serveUnitNum = models.IntegerField(default=3)
     Mode = models.IntegerField(default=1)
     # Mode = models.CharField(max_length=50, choices=MODE, default=MODE[1])
-    tempLimitHigh = models.IntegerField(default=28)
+    tempLimitHigh = models.IntegerField(default=25)
     tempLimitLow = models.IntegerField(default=18)
-    defaultTargetTemp = models.IntegerField(default=25)
+    defaultTargetTemp = models.IntegerField(default=22)
     # feeRateH = models.FloatField(default=2.0)
     # feeRateM = models.FloatField(default=1.5)
     # 不同于静态结构设计，因为最终测试用例没有区分
-    feeRateL = models.FloatField(default=1.0)
+    feeRateL = models.FloatField(default=5.0)
     isSchedulerRunning = models.IntegerField(default=0)
     oneServeTime = models.IntegerField(default=15)
 
@@ -57,7 +57,8 @@ class SchedulerLog(models.Model):
     requestID = models.IntegerField()
     startTime = models.FloatField(default=0.0)
     endTime = models.FloatField(default=0.0)
-    fee = models.FloatField(default=0.0)
+    fee = models.FloatField(default=0.00)
+    power=models.FloatField(default=0.00)
 
     class Meta:
         db_table = "SchedulerLog"

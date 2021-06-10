@@ -189,6 +189,7 @@ def checkRoomState(request):
             fan="null"
             feeRate="null"
             fee=0
+            power=0
             duration=0
         else:
             request=RoomRequest.objects.filter(roomID=i).last()
@@ -196,6 +197,7 @@ def checkRoomState(request):
             fan = SPEED[request.speed + 1][1]
             # feeRate = feeRates[request.speed]
             fee=room.fee
+            power=room.power
             # 空调最后一次关机时间
             stop_request=RoomRequest.objects.filter(roomID=i,speed=-1)#停止的请求
             if len(stop_request)==0:#系统第一次运行
@@ -215,8 +217,9 @@ def checkRoomState(request):
                 duration+=(endtime-record.startTime)
                 duration=int(duration)
         fee=round(fee,2)
+        power=round(power,2)
         cur_temp=round(cur_temp,2)
-        list_Room.append({"state":state,"Current_Temp":cur_temp,"Target_Temp":targetTemp,"Fan":fan,"FeeRate":feeRates,"Fee":fee,"Duration":duration})
+        list_Room.append({"state":state,"Current_Temp":cur_temp,"Target_Temp":targetTemp,"Fan":fan,"FeeRate":feeRates,"Fee":fee,"Duration":duration,"Power":power})
     helper.helpLog()
     return JsonResponse(list_Room,safe=False)
 

@@ -42,13 +42,13 @@ $(document).ready(function(){
     <br><br>
     <form action="" >
         参数设置<br>空调模式
-        <select id="mode"  style="height:25px;">
+        <select onchange="defValue()" id="mode"  style="height:25px;">
             <option value="1">制冷</option>
             <option value="2">制热</option>
         </select><br>
         目标温度上限<input id="THL" type="number" value=28><br>
         目标温度下限<input id="TLL" type="number" value=18><br>
-        缺省服务温度<input id="DT" type="number" value=25><br>
+        缺省服务温度<input id="DT" type="number" value=22><br>
         费率（元/度）<input id="fee" type="number" value=1>
         <input type="button" id="button2" value="提交参数">
     </form>
@@ -60,4 +60,29 @@ $(document).ready(function(){
 
 
 </body>
+<script>
+$(document).ready(function(){
+
+     })
+
+function defValue() {
+    var default_tm = document.getElementById("DT");
+    var highest_tm = document.getElementById("THL");
+    var lowest_tm=document.getElementById("TLL");
+    var m = document.getElementById("mode");
+    console.log("M=",m.value)
+    if( m.value == 1){
+        default_tm.value = 22;
+        highest_tm.value = 25;
+        lowest_tm.value=18;
+    }
+    else{
+        default_tm.value = 28;
+        highest_tm.value = 30;
+        lowest_tm.value=25;}
+}
+function defValue2() {
+    var v = document.getElementById("DT");
+}
+</script>
 </html>

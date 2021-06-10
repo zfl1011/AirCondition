@@ -136,7 +136,7 @@ def changeFanTemp(request):
     room[0].save()
     return HttpResponse(str)
 
-def requestOff(request):#费用没清零吧，必须下次开机前打账单哦
+def requestOff(request):#费用没清零吧，必须下次开机前打账单
     if not helper.hotelOn():
         return HttpResponse("no service")
     roomID = request.GET.get('RoomId')

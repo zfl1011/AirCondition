@@ -333,6 +333,7 @@ def serveSimulate(unitID, roomID, stemp, rpk, feerate):
     count = 0
     r = RoomState.objects.get(roomID=roomID)
     rf=r.fee
+    rp=r.power
     while unit.state == 1 and r.state == 2:
         time.sleep(1)
         tmp = ServerUnit.objects.filter(name=unitID)
@@ -350,13 +351,16 @@ def serveSimulate(unitID, roomID, stemp, rpk, feerate):
             elif rr.speed == 2:
                 change = (5 / 60) * 0.8
             fee = round(change * feerate, 2)
+            power=round(change,2)
             r.fee = r.fee + fee
+            r.power=r.power+change
             r.save()
 
     r = RoomState.objects.get(roomID=roomID)
     dur=r.fee-rf
+    durp=r.power-rp
     # TODO  scheduleLog
-    sl = SchedulerLog.objects.create(serverID=unit.name, roomID=roomID, requestID=rpk, startTime=st, endTime=time.time(), fee=dur)
+    sl = SchedulerLog.objects.create(serverID=unit.name, roomID=roomID, requestID=rpk, startTime=st, endTime=time.time(), fee=dur,power=durp)
     sl.save()
     print("unit ", unit.name, " serve over",roomID,time.asctime(time.localtime(time.time())))
     if r.state == 2:

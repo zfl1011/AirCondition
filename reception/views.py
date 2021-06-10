@@ -69,6 +69,7 @@ def createInvoice(request):
     RoomRequest.objects.create(roomID=roomID, time=time.time(), speed=-1)
     # 计费在结算后清空 roomstate也要改0
     roomstate.fee=0
+    roomstate.power=0
     roomstate.save()
 
     Invoice.objects.create(time=Time,roomID=roomID,timeIn=timeIn,timeOut=timeOut,fee=fee,isPrint=0)
