@@ -20,9 +20,9 @@ class Scheduler:
         feerate = hotel[0].feeRateL
         backtemp = [0,0,0,0,0]
         if hotel[0].Mode == 2:
-            rate = [0.2,0.1,0.05]
+            rate = [0.05,0.1,0.2]
         else:
-            rate = [-0.2,-0.1,-0.05]
+            rate = [-0.05,-0.1,-0.2]
         thread_pool = ThreadPoolExecutor(3)
         while len(hotel) > 0 and hotel[0].isSchedulerRunning == 1:
             print("after 9 seconds")
@@ -346,9 +346,9 @@ def serveSimulate(unitID, roomID, stemp, rpk, feerate):
             # TODO 计费
             if rr.speed == 1:
                 change = 5 / 60
-            elif rr.speed == 0:
-                change = (5 / 60) * 1.2
             elif rr.speed == 2:
+                change = (5 / 60) * 1.2
+            elif rr.speed == 0:
                 change = (5 / 60) * 0.8
             fee = round(change * feerate, 2)
             power=round(change,2)

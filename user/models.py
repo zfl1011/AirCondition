@@ -28,9 +28,9 @@ class RoomState(Room):
 
 SPEED = (
     ('-1','Stop'),
-    ('0','High'),
+    ('0','Low'),
     ('1','Middle'),
-    ('2','Low'),
+    ('2','High'),
 )
 class RoomRequest(Room):
     speed = models.IntegerField(default=1)
