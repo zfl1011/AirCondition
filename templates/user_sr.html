@@ -4,19 +4,45 @@
     <meta charset="UTF-8">
     <title>波普特酒店-选择房间号</title>
 </head>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
 <body>
 <div style="width:300px;margin:0 auto;text-align:center;">
-    您好，请选择房间号：<br><br>
-    <form action="/user" style="width:300px;margin:0 auto;">
-    <select name="RoomId" style="height:25px;">
+    您好，请登录：<br><br>
+    <form action="" style="width:300px;margin:0 auto;">
+        <input id="id_text" type="text" placeholder="请输入身份证号" minlength="18" maxlength="18">
+        <br><br>
+        请选择房间号：
+    <select id="room_id" name="RoomId" style="height:25px;">
         <option value="0">1号房</option>
         <option value="1">2号房</option>
         <option value="2">3号房</option>
         <option value="3">4号房</option>
         <option value="4">5号房</option>
-        <input type="submit" value="确定" >
+        <input type="submit" id="submit" value="确定" >
     </select>
     </form>
 </div>
 </body>
+<script>
+
+$(document).ready(function(){
+	 $("#submit").click(function(){
+	     var num_id = document.getElementById("id_text");
+         var option=$("#room_id option:selected").val();
+	     console.log("M=",num_id.value)
+	     $.get("client_login?room_id="+option+"&cus_name="+num_id.value,function(data){
+			if(data.code==0){
+			    alert("登录成功");
+            }
+             else if(data.code==2)
+                 alert("用户已登录");
+             else
+                 alert("验证失败");
+		});
+	});
+
+});
+</script>
+
 </html>

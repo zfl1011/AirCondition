@@ -25,7 +25,7 @@ class Scheduler:
             rate = [-0.05,-0.1,-0.2]
         thread_pool = ThreadPoolExecutor(3)
         while len(hotel) > 0 and hotel[0].isSchedulerRunning == 1:
-            print("after 9 seconds")
+            print("after 6 seconds")
             # 六个任务，按顺序做 0 把order=0但需要服务的120①state=1或2的是否需要变成3？②state=3的回温 0.075，是否要变成1？
             # ③state==2的 计时 order-9  9秒温度变化，0.15 0.075 0.05
             # ④ state==0但还在排队或正被服务(order!=0),order=0把对应的state。puls的unit叫停(state=0)
@@ -36,7 +36,7 @@ class Scheduler:
             #             else 上一步没被调走，进入时间片 查看提交了几秒了 order=120-int(time-request.time)
             #          elif order==1：换order最小的出来(unit.state=0，order=120)，state=2，进池子
             #          else： iforder-=9>0 order-9,else order = 1
-            # 睡9秒。
+            # 睡6秒。
             needAdd = RoomState.objects.filter(state=1)
             # print("0")
             for r in needAdd:
@@ -183,9 +183,9 @@ class Scheduler:
                             lowestcount = []  # 风速最小的
                             basespeed = req0speed
                             for ring in posi:
-                                if ring[1] <= req0speed:
+                                if ring[1] >= req0speed:
                                     continue
-                                elif ring[1] > basespeed:
+                                elif ring[1] < basespeed:
                                     lowestcount = [ring[0]]
                                     basespeed = ring[1]
                                     bigger.append(ring[0])
@@ -320,7 +320,7 @@ class Scheduler:
                             else:
                                 wq.order = 1
                             wq.save()
-            time.sleep(9)
+            time.sleep(6)
             hotel = Hotel.objects.filter(endTime=0)
 
 

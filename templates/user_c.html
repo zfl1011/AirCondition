@@ -7,67 +7,149 @@
 </script>
 <script>
 $(document).ready(function(){
-	 $("#button1").click(function(){
-	    $.get("RequestOn?RoomId="+{{ id }},function(data,status){
-			alert("开机 数据: " + data + "\n状态: " + status);
+	$("#button1").click(function(){
+	    var option_mode=$("#mode option:selected").val();
+	    var option_speed=$("#speed option:selected").val();
+	    var tmp_target = document.getElementById("temp_target");
+	    $.get("client_setup?room_id="+$("#RoomId").val()+"&on_flag=0"+"&mode="+option_mode+"&speed="+option_speed+"&temp_target="+tmp_target.value,function(data){
+	        if(data.code==0)
+			    alert("开机成功");
+			else{
+			    alert("模式不匹配");
+            }
+
 		});
 	});
 	$("#button2").click(function(){
-	    $.get("RequestOff?RoomId="+{{ id }},function(data,status){
-			alert("关机 数据: " + data );
-		});
-	});
-	$("#button3").click(function(){
-	    $.get("RequestFee?RoomId="+{{ id }},function(data,status){
-			alert("目前已花费: " + data + "元");
-		});
-	});
-	$("#button4").click(function(){
-	    $.get("ChangeTargetTemp?RoomId="+$("#RoomId").val()+"&TargetTemp="+$("#TargetTemp").val(),function(data,status){
-			alert("调温"+data);
-		});
-	});
-	$("#button5").click(function(){
-	    {#var f = $("#fan").options[$("#fan").selectedIndex].value;#}
-	    $.get("ChangeFanSpeed?RoomId="+$("#RoomId").val()+"&FanSpeed="+$("#fan").val(),function(data,status){
-			alert("调风"+data);
+	    var option_mode=$("#mode option:selected").val();
+	    var option_speed=$("#speed option:selected").val();
+	    var tmp_target = document.getElementById("temp_target");
+	    $.get("client_logout?room_id="+$("#RoomId").val(),function(data){
+			alert("您总共花费"+data.cost+"元");
 		});
 	});
 });
+</script>
+
+<script>
+    var time = 0
+     var interval=setInterval(function(){
+        var table = document.getElementById("table");
+        var table1 = document.getElementById("table1");
+        l = table.rows.length
+         l1 = table.rows.length
+        for (var i = l-1; i >0 ; i--) {
+            //alert(i + " " + l)
+            console.log(l+"delete"+i)
+            table.deleteRow(i)
+        }
+        for (var i = l1-1; i >0 ; i--) {
+            //alert(i + " " + l)
+            console.log(l1+"delete"+i)
+            table1.deleteRow(i)
+        }
+        getnew()
+    },5000);
+    function getnew(){
+       $.get("client_monitor?room_id="+$("#RoomId").val(),function(data,status){
+           var table = document.getElementById("table");
+           var row = table.insertRow(table.rows.length);
+           var table1 = document.getElementById("table1");
+           var row1 = table1.insertRow(table1.rows.length);
+           var c1 = row.insertCell(0);
+               c1.innerHTML = data.temp_now;
+               var c2 = row1.insertCell(0);
+               c2.innerHTML = data.cost;
+               var c3 = row1.insertCell(1);
+               c3.innerHTML = data.power;
+           //var tableHeight = table.height();
+           //document.getElementById("panel").scrollTop = tableHeight;
+           {% comment %}var scrollDom = document.getElementById('panel');
+            scrollDom.scrollTop = scrollDom.scrollHeight{% endcomment %}
+           if (data.length == 0) {
+               alert("抱歉，没有查询到数据")
+           }
+       })
+    }
 </script>
 </head>
 <body>
 <div style="height:1000px;width:300px;margin:0 auto;text-align:center;">
     您好，{{id}}号房间的住户<br><br>
-    <button id="button1">开机</button>
-    <br><br>
+    <table class="allTable" id="table" style="width:100px;height:25px;margin:0 auto;text-align:center;" >
+    <tbody>
+        <tr>
+            <th style="width:100px;">当前温度(℃)</th>
+        </tr>
+    </tbody>
+    </table>
     <form action="" >
-        制冷范围{{ lt }}-{{ ht }}℃，默认{{ dt }}℃<br>
+        制冷范围18-25℃，默认22℃<br>
+        制热范围25-30℃，默认28℃<br>
         <input id="RoomId" type="number" style="display:none" value={{ id }}>
 {#        oninput="if(value>28)value=28;if(value<18)value=18"#}
-        <input id="TargetTemp" type="number" value=22>
-        <input type="button" id="button4" value="确认改变温度">
+        请输入目标温度：
+        <input id="temp_target" type="number" value=22 min="18" max="25">
+
+    </form>
+    <br>
+    <form action="" >
+        请选择空调模式：
+        <select onchange="defValue()" id="mode" name="mode" style="height:25px;">
+        <option value="0">制冷(默认)</option>
+        <option value="1">制热</option>
+
+    </select>
+
     </form>
     <br>
     <form action=""  style="width:300px;margin:0 auto;">
         <input id="RoomId" type="number" style="display:none" value={{ id }}>
-    <select id="fan" name="fanSpeed" style="height:25px;">
+        请输入风速：
+    <select id="speed" name="fanSpeed" style="height:25px;">
         <option value="1">中速风(默认)</option>
         <option value="2">高速风</option>
         <option value="0">低速风</option>
-        <input type="button" id="button5" value="确认改变风速" style="margin-left:5px;">
+
     </select>
     </form>
     <br>
+    <button id="button1">开机</button>
     <button id="button2">关机</button>
-    <br><br>
-    <button id="button3">查询总费用</button>
-    <br><br>
 
+    <br><br>
+<table class="allTable" id="table1" style="width:300px;height:25px;margin:0 auto;text-align:center;" >
+    <tbody>
+        <tr>
+            <th style="width:150px;">当前用电量(度)</th>
+            <th style="width:150px;">当前总花费(元)</th>
+        </tr>
+    </tbody>
+    </table>
 </div>
 
-
-
-
 </body>
+<script>
+$(document).ready(function(){
+
+     })
+
+function defValue() {
+    var default_tm = document.getElementById("temp_target");
+    var m = document.getElementById("mode");
+
+    console.log("M=",m.value)
+    if( m.value == 1){
+        default_tm.value = 28;
+        default_tm.min=25;
+        default_tm.max=30;
+    }
+    else{
+        default_tm.value = 22;
+        default_tm.min=18;
+        default_tm.max=25;
+        }
+}
+
+</script>
 </html>

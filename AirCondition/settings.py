@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'inspector',
     'user',
     'manager',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # Django默认开启防止csrf(跨站点请求伪造)攻击,在post请求时,没有上传 csrf字段,导致校验失败,报403错误
     # 'django.middleware.csrf.CsrfViewMiddleware',
@@ -53,6 +55,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+#允许所有的请求头
+CORS_ALLOW_HEADERS = ('*')
 
 ROOT_URLCONF = 'AirCondition.urls'
 
